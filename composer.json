@@ -1,0 +1,27 @@
+{
+    "name": "xvs32x/multilingual-input",
+    "type": "yii2-extension",
+
+    "description": "multilingual input for OmgDef/yii2-multilingual-behavior",
+    "keywords": ["xvs32x"],
+    "license": "GPL-3.0+",
+    "support": {
+        "source": "https://github.com/xvs32x/multilingual-input"
+    },
+    "authors": [
+        {
+            "name": "xvs32x",
+            "email": "x64vs32x@mail.ru"
+        }
+    ],
+
+    "require": {
+        "yiisoft/yii2": "2.0.*"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "xvs32x\\MInput\\": ""
+        }
+    }
+}
