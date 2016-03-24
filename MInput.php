@@ -3,7 +3,6 @@
 namespace xvs32x\MInput;
 
 use Yii;
-use yii\bootstrap\Html;
 use yii\bootstrap\InputWidget;
 use yii\helpers\ArrayHelper;
 
@@ -13,14 +12,9 @@ use yii\helpers\ArrayHelper;
  * */
 class MInput extends InputWidget
 {
+    public $form;
     public $widget;
     public $widgetOptions = ['class' => 'form-control'];
-    public $labelOptions = ['class' => 'control-label'];
-    public $htmlLibrary = 'yii\bootstrap\Html';
-    public $closeTag = 'div';
-    public $openTag = 'div';
-    public $openTagOptions = ['class' => 'form-group'];
-    public $helpBlock;
     public $languages = [];//List of all available languages
     public $defaultLanguage;//Default language
 
@@ -31,9 +25,6 @@ class MInput extends InputWidget
         }
         if (!$this->defaultLanguage) {
             $this->defaultLanguage = ArrayHelper::getValue(Yii::$app->params, 'defaultLanguage');
-        }
-        if (!$this->helpBlock) {
-            $this->helpBlock = Html::tag('div', null, ['class' => 'help-block']);
         }
     }
 
@@ -61,29 +52,16 @@ class MInput extends InputWidget
      * */
     public function getWidgetNormalize($code = null)
     {
+        /** @var \nagser\base\widgets\ActiveForm\ActiveForm $form */
+        $form = $this->form;
         $attribute = $this->attribute . ($code ? '_' . $code : null);
         $widget = $this->widget;
-        $openTagOptions = $this->openTagOptions;
-        Html::addCssClass($openTagOptions, 'field-' . Html::getInputId($this->model, $attribute));
-        $result = [
-            Html::beginTag($this->openTag, $openTagOptions),
-            Html::activeLabel($this->model, $attribute, $this->labelOptions),
-        ];
         if (class_exists($widget)) {
             /**@var \yii\base\Widget $widget */
-            $result[] = $widget::widget([
-                'model' => $this->model,
-                'attribute' => $attribute,
-                'options' => $this->widgetOptions
-            ]);
+            return $form->field($this->model, $attribute)->widget($widget, $this->widgetOptions);
         } else {
-            $result[] = call_user_func_array($this->htmlLibrary . '::' . $widget, [
-                'model' => $this->model, 'attribute' => $attribute, 'options' => $this->widgetOptions
-            ]);
+            return $form->field($this->model, $attribute)->$widget($this->widgetOptions);
         }
-        $result[] = $this->helpBlock;
-        $result[] = Html::endTag($this->closeTag);
-        return implode('', $result);
     }
 
     /**
